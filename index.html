@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIS JUEGOS</title>
+    <style>
+        /* ============ MARCADOR 1: COLORES GENERALES ============ */
+        :root {
+            --fondo: #0f172a;
+            --tarjeta: #1e293b;
+            --verde: #22c55e;
+            --amarillo: #facc15;
+            --texto: #ffffff;
+            --gris: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+        body { background: var(--fondo); color: var(--texto); min-height: 100vh; }
+
+        /* ============ MARCADOR 2: CABECERA ============ */
+        header {
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+        header h1 { font-size: 42px; letter-spacing: 2px; }
+        header h1 span { color: var(--verde); }
+        header p { color: var(--gris); margin-top: 8px; }
+
+        /* Buscador - opcional, si no lo quieres bórralo */
+        .buscador { text-align: center; margin: 20px; }
+        .buscador input {
+            width: 90%; max-width: 400px;
+            padding: 12px 16px; border-radius: 20px;
+            border: none; outline: none;
+            background: var(--tarjeta); color: white; font-size: 16px;
+        }
+
+        /* ============ MARCADOR 3: LISTA DE JUEGOS ============ */
+        .lista-juegos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tarjeta {
+            background: var(--tarjeta);
+            border-radius: 16px;
+            overflow: hidden;
+            text-align: center;
+            padding-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        .tarjeta:hover { transform: scale(1.03); }
+
+        .portada {
+            font-size: 70px;
+            padding: 30px 0 10px;
+            background: #0b1120;
+        }
+        .tarjeta h2 { font-size: 22px; margin: 10px 0 5px; }
+        .tarjeta p { color: var(--gris); font-size: 14px; padding: 0 15px; min-height: 40px; }
+        .etiqueta {
+            display: inline-block;
+            background: #334155;
+            color: var(--amarillo);
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin: 10px 0;
+        }
+
+        .btn-jugar {
+            display: inline-block;
+            background: var(--verde);
+            color: black;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 20px;
+            margin-top: 5px;
+        }
+        .btn-jugar:hover { background: #16a34a; color: white; }
+
+        /* ============ MARCADOR 4: PIE DE PÁGINA ============ */
+        footer {
+            text-align: center;
+            color: var(--gris);
+            font-size: 13px;
+            padding: 30px 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABECERA -->
+    <header>
+        <h1>MIS <span>JUEGOS</span> 🎮</h1>
+        <p>Elige un juego y a jugar</p>
+    </header>
+
+    <!-- BUSCADOR -->
+    <div class="buscador">
+        <input type="text" id="buscar" placeholder="🔍 Buscar juego..." onkeyup="filtrar()">
+    </div>
+
+    <!-- LISTA DE JUEGOS -->
+    <main class="lista-juegos" id="lista">
+
+        <!-- JUEGO 1 -->
+        <article class="tarjeta">
+            <div class="portada">🌻🧟</div>
+            <h2>Jardín vs Cricos</h2>
+            <span class="etiqueta">Estrategia • Tipo PvZ</span>
+            <p>Defiende tu jardín de los cricos. Pon plantas y no dejes que pasen.</p>
+            <a href="jardinVsCricos.html" class="btn-jugar">▶ JUGAR</a>
+        </article>
+
+        <!-- JUEGO 2 -->
+        <article class="tarjeta">
+            <div class="portada">🐤</div>
+            <h2>Pájaro Flapi</h2>
+            <span class="etiqueta">Arcade • Tipo Flappy</span>
+            <p>Esquiva los tubos y vuela lo más lejos que puedas sin chocar.</p>
+            <a href="pajaro flapi.html" class="btn-jugar">▶ JUGAR</a>
+        </article>
+
+        <!-- =====================================================
+             MARCADOR 5: PARA AGREGAR OTRO JUEGO
+             Solo copia este bloque, pégalo aquí abajo y cambia
+             emoji, nombre, descripción y el href
+        ===================================================== -->
+        <!--
+        <article class="tarjeta">
+            <div class="portada">🎲</div>
+            <h2>Nombre del juego</h2>
+            <span class="etiqueta">Categoría</span>
+            <p>Descripción corta del juego.</p>
+            <a href="mi-nuevo-juego.html" class="btn-jugar">▶ JUGAR</a>
+        </article>
+        -->
+
+    </main>
+
+    <footer>
+        Hecho por ti • 2 juegos por ahora • Agrega más cuando quieras
+    </footer>
+
+    <script>
+        // Buscador sencillo
+        function filtrar() {
+            let texto = document.getElementById('buscar').value.toLowerCase();
+            let tarjetas = document.querySelectorAll('.tarjeta');
+            tarjetas.forEach(t => {
+                let nombre = t.querySelector('h2').textContent.toLowerCase();
+                t.style.display = nombre.includes(texto) ? 'block' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

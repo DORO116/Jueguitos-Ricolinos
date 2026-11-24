@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pajaro Flapi</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #2c3e50;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        canvas {
+            border: 4px solid #ffffff;
+            border-radius: 10px;
+            background-color: #70c5ce;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="juego" width="360" height="600"></canvas>
+
+<script>
+    const canvas = document.getElementById("juego");
+    const ctx = canvas.getContext("2d");
+
+    let fotogramas = 0;
+    let puntaje = 0;
+    let mejorPuntaje = 0;
+    let estado = "INICIO";
+
+    const pajaro = {
+        x: 60,
+        y: 250,
+        radio: 16,
+        velocidad: 0,
+        gravedad: 0.45,
+        salto: -7.5,
+
+        dibujar: function() {
+            ctx.fillStyle = "#f1c40f";
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radio, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#000";
+            ctx.stroke();
+
+            // Ojo
+            ctx.fillStyle = "#fff";
+            ctx.beginPath();
+            ctx.arc(this.x + 6, this.y - 5, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#000";
+            ctx.beginPath();
+            ctx.arc(this.x + 8, this.y - 5, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pico
+            ctx.fillStyle = "#e67e22";
+            ctx.beginPath();
+            ctx.moveTo(this.x + 12, this.y);
+            ctx.lineTo(this.x + 24, this.y + 4);
+            ctx.lineTo(this.x + 12, this.y + 8);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        },
+
+        actualizar: function() {
+            if (estado === "INICIO") {
+                this.y = 250 + Math.sin(fotogramas * 0.08) * 6;
+            } else if (estado === "JUGANDO") {
+                this.velocidad += this.gravedad;
+                this.y += this.velocidad;
+
+                if (this.y + this.radio >= canvas.height - 40) {
+                    this.y = canvas.height - 40 - this.radio;
+                    estado = "GAMEOVER";
+                }
+                if (this.y - this.radio <= 0) {
+                    this.y = this.radio;
+                    this.velocidad = 0;
+                }
+            }
+        },
+
+        saltar: function() {
+            this.velocidad = this.salto;
+        },
+
+        reiniciar: function() {
+            this.y = 250;
+            this.velocidad = 0;
+        }
+    };
+
+    const tuberias = {
+        lista: [],
+        ancho: 55,
+        hueco: 135,
+        velocidad: 2.5,
+
+        dibujar: function() {
+            for (let i = 0; i < this.lista.length; i++) {
+                let t = this.lista[i];
+                ctx.fillStyle = "#2ecc71";
+                ctx.strokeStyle = "#000";
+                ctx.lineWidth = 2;
+
+                // Tubería superior
+                ctx.fillRect(t.x, 0, this.ancho, t.arriba);
+                ctx.strokeRect(t.x, 0, this.ancho, t.arriba);
+                ctx.fillRect(t.x - 3, t.arriba - 20, this.ancho + 6, 20);
+                ctx.strokeRect(t.x - 3, t.arriba - 20, this.ancho + 6, 20);
+
+                // Tubería inferior
+                let abajoY = t.arriba + this.hueco;
+                let abajoAlto = canvas.height - abajoY - 40;
+                ctx.fillRect(t.x, abajoY, this.ancho, abajoAlto);
+                ctx.strokeRect(t.x, abajoY, this.ancho, abajoAlto);
+                ctx.fillRect(t.x - 3, abajoY, this.ancho + 6, 20);
+                ctx.strokeRect(t.x - 3, abajoY, this.ancho + 6, 20);
+            }
+        },
+
+        actualizar: function() {
+            if (estado !== "JUGANDO") return;
+
+            if (fotogramas % 110 === 0) {
+                let minAltura = 60;
+                let maxAltura = canvas.height - this.hueco - 100;
+                let alturaArriba = Math.floor(Math.random() * (maxAltura - minAltura + 1) + minAltura);
+                this.lista.push({ x: canvas.width, arriba: alturaArriba, pasada: false });
+            }
+
+            for (let i = 0; i < this.lista.length; i++) {
+                let t = this.lista[i];
+                t.x -= this.velocidad;
+
+                let chocaHorizontal = pajaro.x + pajaro.radio > t.x && pajaro.x - pajaro.radio < t.x + this.ancho;
+                let chocaVertical = pajaro.y - pajaro.radio < t.arriba || pajaro.y + pajaro.radio > t.arriba + this.hueco;
+
+                if (chocaHorizontal && chocaVertical) {
+                    estado = "GAMEOVER";
+                }
+
+                if (t.x + this.ancho < pajaro.x && !t.pasada) {
+                    puntaje++;
+                    t.pasada = true;
+                    if (puntaje > mejorPuntaje) mejorPuntaje = puntaje;
+                }
+
+                if (t.x + this.ancho < 0) {
+                    this.lista.shift();
+                    i--;
+                }
+            }
+        },
+
+        reiniciar: function() {
+            this.lista = [];
+        }
+    };
+    function dibujarEntorno() {
+        // Suelo
+        ctx.fillStyle = "#ded895";
+        ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
+        ctx.fillStyle = "#73bf2e";
+        ctx.fillRect(0, canvas.height - 40, canvas.width, 10);
+        ctx.strokeStyle = "#000";
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height - 40);
+        ctx.lineTo(canvas.width, canvas.height - 40);
+        ctx.stroke();
+
+        // Textos
+        ctx.fillStyle = "#fff";
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 3;
+        ctx.textAlign = "center";
+
+        if (estado === "JUGANDO") {
+            ctx.font = "bold 40px Arial";
+            ctx.strokeText(puntaje, canvas.width / 2, 70);
+            ctx.fillText(puntaje, canvas.width / 2, 70);
+        } else if (estado === "INICIO") {
+            ctx.font = "bold 26px Arial";
+            ctx.strokeText("PAJARO FLAPI", canvas.width / 2, 140);
+            ctx.fillText("PAJARO FLAPI", canvas.width / 2, 140);
+            ctx.font = "18px Arial";
+            ctx.fillText("Clic o ESPACIO para jugar", canvas.width / 2, 340);
+        } else if (estado === "GAMEOVER") {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            ctx.fillRect(40, 180, canvas.width - 80, 200);
+
+            ctx.fillStyle = "#e74c3c";
+            ctx.font = "bold 32px Arial";
+            ctx.fillText("XD PERRO BOBO", canvas.width / 2, 230);
+
+            ctx.fillStyle = "#fff";
+            ctx.font = "20px Arial";
+            ctx.fillText("Puntaje: " + puntaje, canvas.width / 2, 275);
+            ctx.fillText("Récord: " + mejorPuntaje, canvas.width / 2, 310);
+
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "#f1c40f";
+            ctx.fillText("Clic o ESPACIO para reiniciar", canvas.width / 2, 355);
+        }
+    }
+
+    function controlarAccion() {
+        if (estado === "INICIO") {
+            estado = "JUGANDO";
+            pajaro.saltar();
+        } else if (estado === "JUGANDO") {
+            pajaro.saltar();
+        } else if (estado === "GAMEOVER") {
+            pajaro.reiniciar();
+            tuberias.reiniciar();
+            puntaje = 0;
+            estado = "INICIO";
+        }
+    }
+
+    canvas.addEventListener("mousedown", controlarAccion);
+    window.addEventListener("keydown", function(e) {
+        if (e.code === "Space") {
+            e.preventDefault();
+            controlarAccion();
+        }
+    });
+
+    function bucle() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        tuberias.actualizar();
+        tuberias.dibujar();
+        pajaro.actualizar();
+        pajaro.dibujar();
+        dibujarEntorno();
+        fotogramas++;
+        requestAnimationFrame(bucle);
+    }
+
+    bucle();
+</script>
+</body>
+</html>
