@@ -47,7 +47,32 @@ h1 {
     font-weight: bold;
     font-size: 17px;
 }
+    
+#levelPanel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 145px;
+}
 
+#progressTrack {
+    width: 130px;
+    height: 12px;
+    background: #263b23;
+    border: 2px solid #20351f;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#progressFill {
+    width: 0%;
+    height: 100%;
+    background: #f3df78;
+    border-radius: 10px;
+    transition: width 0.2s ease;
+}
+    
 #plantCards {
     display: flex;
     gap: 5px;
@@ -189,7 +214,12 @@ canvas {
         <div id="sunCounter">☀️ 150</div>
         <div id="plantCards"></div>
         <button id="shovel" title="Pala">🪓</button>
+        <div id="levelPanel">
         <div id="levelInfo">Nivel 1</div>
+        <div id="progressTrack">
+        <div id="progressFill"></div>
+    </div>
+</div>
     </div>
 
     <canvas id="canvas" width="900" height="500"></canvas>
@@ -412,6 +442,11 @@ function actualizarUI() {
         infiniteMode
             ? "Infinito - Oleada " + infiniteWave
             : "Nivel " + level;
+    const progress = currentConfig.total > 0
+    ? Math.min(100, (killed / currentConfig.total) * 100)
+    : 0;
+
+document.getElementById("progressFill").style.width = progress + "%";
 
     for (const [key, plant] of Object.entries(PLANTS)) {
         const card = document.getElementById("card-" + key);
@@ -1260,42 +1295,11 @@ function dibujarEfectos() {
 }
 
 // -----------------------------
-// BARRA DE PROGRESO
-// -----------------------------
-
-function dibujarProgreso() {
-    const progress = spawned > 0
-        ? killed / currentConfig.total
-        : 0;
-
-    ctx.fillStyle = "rgba(0,0,0,.35)";
-    ctx.fillRect(12, 10, 65, 480);
-
-    ctx.fillStyle = "#f3df78";
-    ctx.fillRect(
-        22,
-        480 - 450 * progress,
-        45,
-        450 * progress
-    );
-
-    ctx.strokeStyle = "#59472a";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(12, 10, 65, 480);
-
-    ctx.fillStyle = "white";
-    ctx.font = "12px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("PROGRESO", 45, 28);
-}
-
-// -----------------------------
 // BUCLE PRINCIPAL
 // -----------------------------
 
 function dibujar() {
     dibujarTablero();
-    dibujarProgreso();
     dibujarPlantas();
     dibujarZombies();
     dibujarProyectiles();
