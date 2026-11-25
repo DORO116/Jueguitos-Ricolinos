@@ -321,14 +321,14 @@ const ZOMBIES = {
         hp: 260,
         speed: 0.45,
         damage: 0.5,
-        emoji: "🧟"
+        emoji: "🔺"
     },
 
     bucket: {
         hp: 480,
         speed: 0.4,
         damage: 0.6,
-        emoji: "🧟"
+        emoji: "🪣"
     },
 
     runner: {
@@ -829,7 +829,7 @@ function actualizar() {
             x: OFFSET + Math.random() * (COLS * CELL_W),
             y: 20,
             targetY: 70 + Math.random() * 300,
-            value: 25,
+            value: 50,
             timer: 600
         });
     }
@@ -870,7 +870,7 @@ function actualizar() {
                     x: p.x + 45,
                     y: p.y + 35,
                     targetY: p.y + 70,
-                    value: 25,
+                    value: 50,
                     timer: 600
                 });
             }
