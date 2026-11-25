@@ -342,7 +342,7 @@ const ZOMBIES = {
         hp: 1200,
         speed: 0.3,
         damage: 1.5,
-        emoji: "🤖"
+        emoji: "🧟"
     }
 };
 
@@ -1201,70 +1201,16 @@ function dibujarPlantas() {
 // DIBUJAR ZOMBIS
 // -----------------------------
 
-
 function dibujarZombies() {
     for (const z of zombies) {
         ctx.font = "43px Arial";
         ctx.textAlign = "center";
 
-        // Cuerpo del zombi
-        ctx.font = "43px Arial";
         ctx.fillText(
-            "🧟",
             z.emoji,
             z.x,
             z.y + 15
         );
-
-        // Accesorios en la cabeza
-        if (z.type === "cone") {
-            ctx.font = "23px Arial";
-            ctx.fillText(
-                "🔺",
-                z.x,
-                z.y - 22
-            );
-        }
-
-        if (z.type === "bucket") {
-            ctx.font = "25px Arial";
-            ctx.fillText(
-                "🪣",
-                z.x,
-                z.y - 25
-            );
-        }
-
-        // Barra de vida
-        const width = z.type === "boss" ? 55 : 40;
-        const percent = Math.max(0, z.hp / z.maxHp);
-
-        ctx.fillStyle = "#4d2020";
-        ctx.fillRect(
-            z.x - width / 2,
-            z.y - 35,
-            width,
-            6
-        );
-
-        ctx.fillStyle = "#d94c3b";
-        ctx.fillRect(
-            z.x - width / 2,
-            z.y - 35,
-            width * percent,
-            6
-        );
-
-        // Efecto de congelación
-        if (z.slow > 0) {
-            ctx.fillStyle = "#9ce8ff";
-            ctx.beginPath();
-            ctx.arc(z.x, z.y - 45, 5, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    }
-}
-
 
         // Barra de vida.
         const width = z.type === "boss" ? 55 : 40;
