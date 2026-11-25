@@ -824,7 +824,7 @@ function actualizar() {
     frame++;
 
     // Generar soles.
-    if (frame % 450 === 0) {
+    if (frame % 350 === 0) {
         suns.push({
             x: OFFSET + Math.random() * (COLS * CELL_W),
             y: 20,
@@ -865,7 +865,7 @@ function actualizar() {
 
         // Girasol.
         if (p.type === "sunflower") {
-            if (p.timer % 1440 === 0) {
+            if (p.timer % 1080 === 0) {
                 suns.push({
                     x: p.x + 45,
                     y: p.y + 35,
@@ -885,7 +885,7 @@ function actualizar() {
                 z => z.row === p.row && z.x > p.x
             );
 
-            if (enemyInRow && p.timer % 75 === 0) {
+            if (enemyInRow && p.timer % 125 === 0) {
                 bullets.push({
                     x: p.x + 65,
                     y: p.y + 50,
