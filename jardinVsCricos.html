@@ -1201,16 +1201,39 @@ function dibujarPlantas() {
 // DIBUJAR ZOMBIS
 // -----------------------------
 
+
 function dibujarZombies() {
     for (const z of zombies) {
         ctx.font = "43px Arial";
         ctx.textAlign = "center";
 
+        // Cuerpo del zombi
+        ctx.font = "43px Arial";
         ctx.fillText(
+            "🧟",
             z.emoji,
             z.x,
             z.y + 15
         );
+
+        // Accesorios en la cabeza
+        if (z.type === "cone") {
+            ctx.font = "23px Arial";
+            ctx.fillText(
+                "🔺",
+                z.x,
+                z.y - 22
+            );
+        }
+
+        if (z.type === "bucket") {
+            ctx.font = "25px Arial";
+            ctx.fillText(
+                "🪣",
+                z.x,
+                z.y - 25
+            );
+        }
 
         // Barra de vida
         const width = z.type === "boss" ? 55 : 40;
