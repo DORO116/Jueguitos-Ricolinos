@@ -47,7 +47,7 @@ h1 {
     font-weight: bold;
     font-size: 17px;
 }
-
+    
 #levelPanel {
     display: flex;
     flex-direction: column;
@@ -72,7 +72,7 @@ h1 {
     border-radius: 10px;
     transition: width 0.2s ease;
 }
-
+    
 #plantCards {
     display: flex;
     gap: 5px;
@@ -102,16 +102,9 @@ h1 {
     filter: brightness(.55);
 }
 
-.plant-card.locked {
-    background: #5b5548;
-    border-color: #36322a;
-    color: #cfc8b8;
-    filter: none;
-}
-
 .plant-card .emoji {
     display: block;
-    font-size: 27px;
+    font-size: 29px;
 }
 
 .plant-card .cost {
@@ -127,45 +120,19 @@ h1 {
     pointer-events: none;
 }
 
-.side-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
 #shovel {
     width: 68px;
-    height: 40px;
+    height: 76px;
     border: 3px solid #79683c;
     border-radius: 7px;
     background: #b6a477;
-    font-size: 20px;
+    font-size: 29px;
     cursor: pointer;
 }
 
 #shovel.selected {
     border-color: white;
     background: #a9e78c;
-}
-
-#almanacBtn {
-    width: 68px;
-    height: 31px;
-    border: 2px solid #8a7846;
-    border-radius: 6px;
-    background: #ead99c;
-    color: #26351d;
-    font-size: 11px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-#almanacBtn:hover {
-    background: #f6e8b5;
-}
-
-#boardWrapper {
-    position: relative;
 }
 
 canvas {
@@ -177,24 +144,19 @@ canvas {
     cursor: crosshair;
 }
 
-#overlay, #almanacModal {
+#overlay {
     position: absolute;
     inset: 0;
+    top: 100px;
     display: none;
     align-items: center;
     justify-content: center;
     background: rgba(0,0,0,.72);
-    pointer-events: none;
     z-index: 10;
 }
 
-#overlay.show, #almanacModal.show {
+#overlay.show {
     display: flex;
-    pointer-events: auto;
-}
-
-#almanacModal {
-    z-index: 20;
 }
 
 #overlayBox {
@@ -234,145 +196,10 @@ canvas {
     background: #36732d;
 }
 
-#almanacBox {
-    background: #e7d69b;
-    color: #26351d;
-    border: 5px solid #66532d;
-    border-radius: 14px;
-    padding: 18px;
-    width: 92%;
-    max-width: 760px;
-    max-height: 85%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    text-align: left;
-}
-
-.almanac-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    border-bottom: 2px solid #b59e63;
-    padding-bottom: 8px;
-}
-
-.almanac-header h2 {
-    margin: 0;
-    font-size: 22px;
-}
-
-.almanac-tabs {
-    display: flex;
-    gap: 8px;
-}
-
-.tab-btn {
-    padding: 7px 14px;
-    border: 2px solid #66532d;
-    border-radius: 7px;
-    background: #d5c182;
-    color: #26351d;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.tab-btn.active {
-    background: #4b923d;
-    color: white;
-}
-
-.close-btn {
-    padding: 7px 12px;
-    border: 0;
-    border-radius: 7px;
-    background: #a8382b;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.almanac-body {
-    display: grid;
-    grid-template-columns: 1.15fr 1fr;
-    gap: 14px;
-    overflow-y: auto;
-}
-
-.almanac-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
-    gap: 8px;
-    align-content: start;
-}
-
-.almanac-item {
-    background: #f5eac4;
-    border: 2px solid #8a7340;
-    border-radius: 8px;
-    padding: 8px 6px;
-    text-align: center;
-    cursor: pointer;
-}
-
-.almanac-item.active {
-    border-color: #2e7d22;
-    background: #d7f2c9;
-}
-
-.almanac-item.locked {
-    background: #9c9278;
-    opacity: 0.85;
-}
-
-.almanac-item .icon {
-    font-size: 28px;
-    display: block;
-}
-
-.almanac-item .label {
-    font-size: 11px;
-    font-weight: bold;
-    margin-top: 4px;
-    display: block;
-}
-
-.almanac-detail {
-    background: #f5eac4;
-    border: 2px solid #8a7340;
-    border-radius: 10px;
-    padding: 14px;
-}
-
-.almanac-detail h3 {
-    margin: 0 0 6px;
-    font-size: 20px;
-}
-
-.almanac-stats {
+#help {
+    color: #d5e7ce;
     font-size: 13px;
-    background: #e7d7a3;
-    padding: 8px 10px;
-    border-radius: 7px;
-    margin: 10px 0;
-    line-height: 1.5;
-}
-
-.almanac-lore {
-    font-style: italic;
-    font-size: 13px;
-    color: #4a3c20;
-    border-left: 3px solid #66532d;
-    padding-left: 8px;
     margin-top: 10px;
-}
-
-@media (max-width: 680px) {
-    .almanac-body {
-        grid-template-columns: 1fr;
-    }
 }
 </style>
 </head>
@@ -386,41 +213,19 @@ canvas {
     <div id="topbar">
         <div id="sunCounter">☀️ 150</div>
         <div id="plantCards"></div>
-        <div class="side-controls">
-            <button id="shovel" title="Pala">🪓</button>
-            <button id="almanacBtn" onclick="abrirAlmanaque()">📖 Almanaque</button>
-        </div>
+        <button id="shovel" title="Pala">🪓</button>
         <div id="levelPanel">
-            <div id="levelInfo">Nivel 1</div>
-            <div id="progressTrack">
-                <div id="progressFill"></div>
-            </div>
-        </div>
+        <div id="levelInfo">Nivel 1</div>
+        <div id="progressTrack">
+        <div id="progressFill"></div>
+    </div>
+</div>
     </div>
 
-    <div id="boardWrapper">
-        <canvas id="canvas" width="900" height="500"></canvas>
+    <canvas id="canvas" width="900" height="500"></canvas>
 
-        <div id="overlay">
-            <div id="overlayBox"></div>
-        </div>
-
-        <div id="almanacModal">
-            <div id="almanacBox">
-                <div class="almanac-header">
-                    <h2>📖 Almanaque Suburbano</h2>
-                    <div class="almanac-tabs">
-                        <button class="tab-btn active" id="tabPlants" onclick="cambiarTabAlmanaque('plants')">🌱 Plantas</button>
-                        <button class="tab-btn" id="tabZombies" onclick="cambiarTabAlmanaque('zombies')">🧟 Cricos</button>
-                        <button class="close-btn" onclick="cerrarAlmanaque()">✕</button>
-                    </div>
-                </div>
-                <div class="almanac-body">
-                    <div class="almanac-grid" id="almanacList"></div>
-                    <div class="almanac-detail" id="almanacDetail"></div>
-                </div>
-            </div>
-        </div>
+    <div id="overlay">
+        <div id="overlayBox"></div>
     </div>
 
 </div>
@@ -435,16 +240,11 @@ const ROWS = 5;
 const COLS = 9;
 const OFFSET = 90;
 
-const STORAGE_KEY = "jardin_vs_cricos_shadowpea_unlocked";
-let shadowPeaUnlocked = localStorage.getItem(STORAGE_KEY) === "true";
-
 let state = "MENU";
-let previousStateBeforeAlmanac = "PLAYING";
 let sun = 150;
 let level = 1;
 let frame = 0;
 let tool = null;
-let nextZombieId = 1;
 
 let plants = [];
 let zombies = [];
@@ -465,12 +265,7 @@ const PLANTS = {
         cost: 50,
         hp: 100,
         emoji: "🌻",
-        cd: 300,
-        last: -1000,
-        unlocked: true,
-        role: "Producción solar",
-        desc: "Genera soles extra cada cierto tiempo para desplegar más defensas.",
-        lore: "No le importa si está nublado; siempre busca el lado luminoso del jardín."
+        cd: 300
     },
 
     peashooter: {
@@ -478,25 +273,7 @@ const PLANTS = {
         cost: 100,
         hp: 120,
         emoji: "🌱",
-        cd: 300,
-        last: -1000,
-        unlocked: true,
-        role: "Ataque básico",
-        desc: "Dispara guisantes a los cricos que avanzan por su misma fila.",
-        lore: "Practicar puntería contra latas vacías lo preparó para defender el patio."
-    },
-
-    puffshroom: {
-        name: "Seta Desesporada",
-        cost: 0,
-        hp: 80,
-        emoji: "🍄",
-        cd: 220,
-        last: -1000,
-        unlocked: true,
-        role: "Defensa gratuita (3 casillas)",
-        desc: "No cuesta soles, pero solo alcanza a los cricos a menos de 3 casillas.",
-        lore: "Pequeña, económica y sorprendentemente valiente frente a cricos gigantes."
+        cd: 300
     },
 
     wallnut: {
@@ -504,12 +281,7 @@ const PLANTS = {
         cost: 50,
         hp: 600,
         emoji: "🥜",
-        cd: 600,
-        last: -1000,
-        unlocked: true,
-        role: "Bloqueo resistente",
-        desc: "Soporta muchos mordiscos para frenar el avance enemigo.",
-        lore: "La gente piensa que tener cáscara dura es aburrido hasta que muerde un crico."
+        cd: 600
     },
 
     snowpea: {
@@ -517,12 +289,7 @@ const PLANTS = {
         cost: 175,
         hp: 120,
         emoji: "❄️",
-        cd: 400,
-        last: -1000,
-        unlocked: true,
-        role: "Ataque + Ralentización",
-        desc: "Lanza guisantes helados que hacen daño y reducen a la mitad la velocidad.",
-        lore: "Su aliento ártico mantiene fríos los ánimos incluso en las oleadas finales."
+        cd: 400
     },
 
     cherrybomb: {
@@ -530,12 +297,7 @@ const PLANTS = {
         cost: 150,
         hp: 50,
         emoji: "🍒",
-        cd: 900,
-        last: -1000,
-        unlocked: true,
-        role: "Explosión en área",
-        desc: "Detona tras un breve instante causando gran daño en un radio amplio.",
-        lore: "El gemelo izquierdo quiere explotar; el derecho solo quiere ver fuegos artificiales."
+        cd: 900
     },
 
     potatoMine: {
@@ -543,85 +305,44 @@ const PLANTS = {
         cost: 25,
         hp: 100,
         emoji: "🥔",
-        cd: 600,
-        last: -1000,
-        unlocked: true,
-        role: "Mina terrestre",
-        desc: "Tarda unos segundos en armarse bajo tierra y explota al contacto.",
-        lore: "Prefiere meditar bajo tierra antes de dar una sorpresa explosiva."
-    },
-
-    shadowpea: {
-        name: "Lanzaguisantes Sombrío",
-        cost: 150,
-        hp: 140,
-        emoji: "🌑",
-        cd: 420,
-        last: -1000,
-        unlocked: shadowPeaUnlocked,
-        role: "Especial perforante y gélido",
-        desc: "Dispara orbes sombríos que atraviesan a todos los cricos de la fila y los ralentizan.",
-        lore: "Despertó tras salvar los 5 niveles; su sombra no perdona a ninguna fila."
+        cd: 600
     }
 };
 
 const ZOMBIES = {
     normal: {
-        name: "Crico Normal",
         hp: 120,
-        armorHp: 0,
         speed: 0.45,
         damage: 0.5,
-        emoji: "🧟",
-        desc: "Crico estándar de avance constante.",
-        lore: "Su pasatiempo favorito es caminar en línea recta hacia las plantas."
+        emoji: "🧟"
     },
 
     cone: {
-        name: "Crico Caracono",
-        hp: 120,
-        armorHp: 140,
+        hp: 260,
         speed: 0.45,
         damage: 0.5,
-        emoji: "🧟",
-        hatType: "cone",
-        desc: "Lleva un cono naranja en la cabeza que absorbe daño extra antes de caer.",
-        lore: "Consiguió el cono en una obra vial y decidió usarlo como sombrero de gala."
+        emoji: "🔺"
     },
 
     bucket: {
-        name: "Crico Caracubo",
-        hp: 120,
-        armorHp: 360,
+        hp: 480,
         speed: 0.4,
         damage: 0.6,
-        emoji: "🧟",
-        hatType: "bucket",
-        desc: "Porta un balde metálico resistente que se desprende al romperse.",
-        lore: "El eco dentro de su balde suena a tambor cada vez que recibe un guisante."
+        emoji: "🪣"
     },
 
     runner: {
-        name: "Crico Veloz",
         hp: 140,
-        armorHp: 0,
         speed: 0.9,
         damage: 0.5,
-        emoji: "🏃",
-        desc: "Avanza al doble de velocidad que un crico común.",
-        lore: "Nunca se pierde el calentamiento antes de invadir un jardín."
+        emoji: "🏃"
     },
 
     boss: {
-        name: "Crico Robot",
-        hp: 900,
-        armorHp: 300,
+        hp: 1200,
         speed: 0.3,
         damage: 1.5,
-        emoji: "🤖",
-        hatType: "visor",
-        desc: "Blindaje pesado y golpe potente; aparece en el nivel 5 y oleadas altas.",
-        lore: "Ensamblado con chatarra reforzada para aguantar descargas continuas."
+        emoji: "🤖"
     }
 };
 
@@ -679,14 +400,12 @@ function initUI() {
         card.id = "card-" + key;
 
         card.innerHTML = `
-            <span class="emoji" id="emoji-${key}">${plant.unlocked ? plant.emoji : "🔒"}</span>
-            <span class="cost" id="cost-${key}">${plant.unlocked ? ☀️ ${plant.cost} : "Nivel 5"}</span>
+            <span class="emoji">${plant.emoji}</span>
+            <span class="cost">☀️ ${plant.cost}</span>
             <div class="cooldown" id="cooldown-${key}"></div>
         `;
 
-        card.title = plant.unlocked
-            ? ${plant.name} (${plant.cost})
-            : ${plant.name} — Completa el Nivel 5 para desbloquear;
+        card.title = plant.name;
 
         card.onclick = () => elegirHerramienta(key);
 
@@ -701,26 +420,10 @@ function initUI() {
     };
 }
 
-function sincronizarDesbloqueoSombrio() {
-    PLANTS.shadowpea.unlocked = shadowPeaUnlocked;
-    const emojiEl = document.getElementById("emoji-shadowpea");
-    const costEl = document.getElementById("cost-shadowpea");
-    const cardEl = document.getElementById("card-shadowpea");
-
-    if (emojiEl && costEl && cardEl) {
-        emojiEl.textContent = shadowPeaUnlocked ? PLANTS.shadowpea.emoji : "🔒";
-        costEl.textContent = shadowPeaUnlocked ? ☀️ ${PLANTS.shadowpea.cost} : "Nivel 5";
-        cardEl.title = shadowPeaUnlocked
-            ? ${PLANTS.shadowpea.name} (${PLANTS.shadowpea.cost})
-            : ${PLANTS.shadowpea.name} — Completa el Nivel 5 para desbloquear;
-    }
-}
-
 function elegirHerramienta(type) {
     if (state !== "PLAYING") return;
 
     const p = PLANTS[type];
-    if (!p || !p.unlocked) return;
 
     if (sun < p.cost) return;
 
@@ -735,140 +438,29 @@ function actualizarUI() {
         infiniteMode
             ? "Infinito - Oleada " + infiniteWave
             : "Nivel " + level;
-
     const progress = currentConfig.total > 0
-        ? Math.min(100, (killed / currentConfig.total) * 100)
-        : 0;
+    ? Math.min(100, (killed / currentConfig.total) * 100)
+    : 0;
 
-    document.getElementById("progressFill").style.width = progress + "%";
+document.getElementById("progressFill").style.width = progress + "%";
 
     for (const [key, plant] of Object.entries(PLANTS)) {
         const card = document.getElementById("card-" + key);
         const cooldown = document.getElementById("cooldown-" + key);
-        if (!card || !cooldown) continue;
 
-        if (!plant.unlocked) {
-            card.classList.add("locked");
-            card.classList.remove("selected", "disabled");
-            cooldown.style.transform = "scaleY(0)";
-            continue;
-        }
-
-        card.classList.remove("locked");
-
-        const elapsed = Math.max(0, frame - (plant.last ?? -1000));
-        const remaining = Math.max(0, plant.cd - elapsed);
+        const remaining = Math.max(0, plant.cd - (frame - plant.last));
 
         card.classList.toggle("selected", tool === key);
         card.classList.toggle("disabled", sun < plant.cost || remaining > 0);
 
-        cooldown.style.transform = scaleY(${remaining / plant.cd});
+        cooldown.style.transform =
+            scaleY(${remaining / plant.cd});
     }
 
     document.getElementById("shovel").classList.toggle(
         "selected",
         tool === "shovel"
     );
-}
-
-// -----------------------------
-// ALMANAQUE
-// -----------------------------
-
-let almanacTab = "plants";
-let selectedAlmanacKey = "sunflower";
-
-function abrirAlmanaque() {
-    if (state === "ALMANAC") return;
-    previousStateBeforeAlmanac = state;
-    state = "ALMANAC";
-    almanacTab = "plants";
-    selectedAlmanacKey = "sunflower";
-    renderAlmanaque();
-    document.getElementById("almanacModal").classList.add("show");
-}
-
-function cerrarAlmanaque() {
-    document.getElementById("almanacModal").classList.remove("show");
-    state = previousStateBeforeAlmanac;
-    actualizarUI();
-}
-
-function cambiarTabAlmanaque(tab) {
-    almanacTab = tab;
-    document.getElementById("tabPlants").classList.toggle("active", tab === "plants");
-    document.getElementById("tabZombies").classList.toggle("active", tab === "zombies");
-    selectedAlmanacKey = tab === "plants" ? "sunflower" : "normal";
-    renderAlmanaque();
-}
-
-function renderAlmanaque() {
-    const listEl = document.getElementById("almanacList");
-    listEl.innerHTML = "";
-
-    const source = almanacTab === "plants" ? PLANTS : ZOMBIES;
-
-    for (const [key, item] of Object.entries(source)) {
-        const isLocked = almanacTab === "plants" && !item.unlocked;
-        const div = document.createElement("div");
-        div.className = "almanac-item" +
-            (selectedAlmanacKey === key ? " active" : "") +
-            (isLocked ? " locked" : "");
-
-        div.innerHTML = `
-            <span class="icon">${isLocked ? "🔒" : item.emoji}</span>
-            <span class="label">${item.name}</span>
-        `;
-
-        div.onclick = () => {
-            selectedAlmanacKey = key;
-            renderAlmanaque();
-        };
-
-        listEl.appendChild(div);
-    }
-
-    renderDetalleAlmanaque();
-}
-
-function renderDetalleAlmanaque() {
-    const detailEl = document.getElementById("almanacDetail");
-    const source = almanacTab === "plants" ? PLANTS : ZOMBIES;
-    const item = source[selectedAlmanacKey] || Object.values(source)[0];
-
-    if (almanacTab === "plants") {
-        const estadoTexto = item.unlocked
-            ? "Disponible"
-            : "Bloqueada — Completa el Nivel 5 para desbloquear";
-
-        detailEl.innerHTML = `
-            <h3>${item.unlocked ? item.emoji : "🔒"} ${item.name}</h3>
-            <div><strong>Estado:</strong> ${estadoTexto}</div>
-            <div class="almanac-stats">
-                <strong>Costo:</strong> ☀️ ${item.cost}<br>
-                <strong>Resistencia:</strong> ${item.hp} HP<br>
-                <strong>Rol:</strong> ${item.role}
-            </div>
-            <p>${item.desc}</p>
-            <div class="almanac-lore">"${item.lore}"</div>
-        `;
-    } else {
-        const totalHp = item.hp + (item.armorHp || 0);
-        const armorNote = item.armorHp > 0
-            ? ` (Cuerpo: ${item.hp} + Accesorio: ${item.armorHp})`
-            : "";
-
-        detailEl.innerHTML = `
-            <h3>${item.emoji} ${item.name}</h3>
-            <div class="almanac-stats">
-                <strong>Resistencia total:</strong> ${totalHp} HP${armorNote}<br>
-                <strong>Velocidad:</strong> ${item.speed.toFixed(2)}<br>
-                <strong>Daño:</strong> ${item.damage}
-            </div>
-            <p>${item.desc}</p>
-            <div class="almanac-lore">"${item.lore}"</div>
-        `;
-    }
 }
 
 // -----------------------------
@@ -928,17 +520,13 @@ function configurarOleadaInfinita() {
     frame = 0;
     spawned = 0;
     killed = 0;
-    tool = null;
-
-    for (const p of Object.values(PLANTS)) {
-        p.last = -1000;
-    }
 
     zombies = [];
     bullets = [];
     suns = [];
     fx = [];
 
+    // Las plantas y cortacéspedes se conservan entre oleadas.
     actualizarUI();
 }
 
@@ -1035,19 +623,9 @@ function pantallaNivelCompletado() {
 function pantallaVictoria() {
     state = "WON";
 
-    const wasAlreadyUnlocked = shadowPeaUnlocked;
-    shadowPeaUnlocked = true;
-    localStorage.setItem(STORAGE_KEY, "true");
-    sincronizarDesbloqueoSombrio();
-    actualizarUI();
-
-    const rewardMsg = wasAlreadyUnlocked
-        ? "El <strong>Lanzaguisantes Sombrío</strong> sigue listo para arrasar en el modo infinito."
-        : "🌑 ¡Has desbloqueado al <strong>Lanzaguisantes Sombrío</strong>! Sus orbes atraviesan filas completas y ralentizan a los cricos.";
-
     mostrarOverlay(
         "🏆 ¡Jardín salvado!",
-        ¡Completaste los cinco niveles de la campaña!<br><br>${rewardMsg}<br><br>Has desbloqueado el modo infinito. ¿Cuántas oleadas podrás resistir?,
+        "¡Completaste los cinco niveles de la campaña!<br><br>Has desbloqueado el modo infinito. ¿Cuántas oleadas podrás resistir?",
         `
         <button onclick="iniciarInfinito()">♾️ Jugar modo infinito</button>
         <button onclick="reiniciarJuego()">Volver a jugar campaña</button>
@@ -1086,8 +664,6 @@ function obtenerPlanta(col, row) {
 
 function colocarPlanta(col, row, type) {
     const data = PLANTS[type];
-
-    if (!data || !data.unlocked) return;
 
     if (obtenerPlanta(col, row)) return;
 
@@ -1198,22 +774,14 @@ function crearZombie() {
     }
 
     const row = Math.floor(Math.random() * ROWS);
-    const bodyHp = data.hp * hpMultiplier;
-    const armorHp = (data.armorHp || 0) * hpMultiplier;
 
     zombies.push({
-        id: nextZombieId++,
         x: 920,
         y: row * CELL_H + 50,
         row,
         type,
-        hp: bodyHp,
-        maxHp: bodyHp,
-        armorHp: armorHp,
-        maxArmorHp: armorHp,
-        hatType: data.hatType || null,
-        hatDropped: false,
-        fallingHat: null,
+        hp: data.hp * hpMultiplier,
+        maxHp: data.hp * hpMultiplier,
         speed: data.speed * speedMultiplier,
         damage: data.damage,
         emoji: data.emoji,
@@ -1222,38 +790,6 @@ function crearZombie() {
     });
 
     spawned++;
-}
-
-function aplicarDanioZombie(zombie, amount) {
-    let remainingDamage = amount;
-
-    if (zombie.armorHp > 0) {
-        if (remainingDamage >= zombie.armorHp) {
-            remainingDamage -= zombie.armorHp;
-            zombie.armorHp = 0;
-
-            if (zombie.hatType && !zombie.hatDropped) {
-                zombie.hatDropped = true;
-                zombie.fallingHat = {
-                    type: zombie.hatType,
-                    x: zombie.x,
-                    y: zombie.y - 22,
-                    vy: -2.2,
-                    vx: 1.1,
-                    rot: 0,
-                    vRot: 0.08,
-                    alpha: 1
-                };
-            }
-        } else {
-            zombie.armorHp -= remainingDamage;
-            remainingDamage = 0;
-        }
-    }
-
-    if (remainingDamage > 0) {
-        zombie.hp -= remainingDamage;
-    }
 }
 
 // -----------------------------
@@ -1273,7 +809,7 @@ function explosion(x, y, radius, damage) {
         const distance = Math.hypot(z.x - x, z.y - y);
 
         if (distance <= radius) {
-            aplicarDanioZombie(z, damage);
+            z.hp -= damage;
         }
     }
 }
@@ -1355,50 +891,7 @@ function actualizar() {
                     y: p.y + 50,
                     row: p.row,
                     damage: 25,
-                    ice: p.type === "snowpea",
-                    piercing: false,
-                    hitIds: []
-                });
-            }
-        }
-
-        // Seta Desesporada (alcance de 3 casillas hacia adelante).
-        if (p.type === "puffshroom") {
-            const maxRangeX = p.x + CELL_W * 3;
-            const enemyInRange = zombies.some(
-                z => z.row === p.row && z.x > p.x && z.x <= maxRangeX
-            );
-
-            if (enemyInRange && p.timer % 110 === 0) {
-                bullets.push({
-                    x: p.x + 55,
-                    y: p.y + 52,
-                    row: p.row,
-                    damage: 18,
-                    spore: true,
-                    maxX: maxRangeX + 20,
-                    piercing: false,
-                    hitIds: []
-                });
-            }
-        }
-
-        // Lanzaguisantes Sombrío (perforante + ralentiza).
-        if (p.type === "shadowpea") {
-            const enemyInRow = zombies.some(
-                z => z.row === p.row && z.x > p.x
-            );
-
-            if (enemyInRow && p.timer % 135 === 0) {
-                bullets.push({
-                    x: p.x + 65,
-                    y: p.y + 50,
-                    row: p.row,
-                    damage: 35,
-                    ice: true,
-                    shadow: true,
-                    piercing: true,
-                    hitIds: []
+                    ice: p.type === "snowpea"
                 });
             }
         }
@@ -1419,10 +912,13 @@ function actualizar() {
 
         // PATATAPUM.
         if (p.type === "potatoMine") {
+
+            // Se prepara bajo tierra durante 15 segundos.
             if (p.timer >= 900) {
                 p.armed = true;
             }
 
+            // Cuando está armada, explota al contacto con un zombi.
             if (p.armed) {
                 const touchingZombie = zombies.some(z =>
                     z.row === p.row &&
@@ -1452,55 +948,34 @@ function actualizar() {
     for (let i = bullets.length - 1; i >= 0; i--) {
         const b = bullets[i];
 
-        b.x += b.spore ? 5 : 6;
+        b.x += 6;
 
-        let removeBullet = false;
+        let hit = false;
 
-        for (let zIdx = 0; zIdx < zombies.length; zIdx++) {
-            const z = zombies[zIdx];
-
+        for (const z of zombies) {
             if (
                 z.row === b.row &&
-                Math.abs(z.x - b.x) < 28 &&
-                !b.hitIds.includes(z.id)
+                Math.abs(z.x - b.x) < 28
             ) {
-                aplicarDanioZombie(z, b.damage);
-                b.hitIds.push(z.id);
+                z.hp -= b.damage;
 
                 if (b.ice) {
                     z.slow = 180;
                 }
 
-                if (!b.piercing) {
-                    removeBullet = true;
-                    break;
-                }
+                hit = true;
+                break;
             }
         }
 
-        if (b.maxX && b.x > b.maxX) {
-            removeBullet = true;
-        }
-
-        if (removeBullet || b.x > 920) {
+        if (hit || b.x > 920) {
             bullets.splice(i, 1);
         }
     }
 
-    // Actualizar zombis y accesorios cayendo.
+    // Actualizar zombis.
     for (let i = zombies.length - 1; i >= 0; i--) {
         const z = zombies[i];
-
-        if (z.fallingHat) {
-            z.fallingHat.x += z.fallingHat.vx;
-            z.fallingHat.y += z.fallingHat.vy;
-            z.fallingHat.vy += 0.16;
-            z.fallingHat.rot += z.fallingHat.vRot;
-            z.fallingHat.alpha -= 0.025;
-            if (z.fallingHat.alpha <= 0) {
-                z.fallingHat = null;
-            }
-        }
 
         if (z.hp <= 0) {
             zombies.splice(i, 1);
@@ -1519,6 +994,8 @@ function actualizar() {
         );
 
         if (plant) {
+            // Los zombis no pueden comerse una Patatapum.
+            // Si aún no está armada, siguen caminando.
             if (plant.type === "potatoMine") {
                 if (!plant.armed) {
                     z.x -= z.slow > 0 ? z.speed * 0.5 : z.speed;
@@ -1639,6 +1116,9 @@ function dibujarTablero() {
     ctx.fillStyle = "#d4b47a";
     ctx.fillRect(0, 0, OFFSET, 500);
 
+    ctx.font = "45px Arial";
+    ctx.fillText("", 15, 260);
+
     // Cortacéspedes.
     for (const mower of mowers) {
         if (mower.active) {
@@ -1666,6 +1146,7 @@ function dibujarPlantas() {
         let emoji = data.emoji;
 
         if (p.type === "potatoMine") {
+            // Enterrada mientras se prepara.
             emoji = p.armed ? "🥔" : "🟤";
         }
 
@@ -1686,7 +1167,7 @@ function dibujarPlantas() {
             ctx.fillStyle = "#542b20";
             ctx.fillRect(p.x + 17, p.y + 8, width, 6);
 
-            ctx.fillStyle = p.type === "shadowpea" ? "#9b59b6" : "#5ae052";
+            ctx.fillStyle = "#5ae052";
             ctx.fillRect(
                 p.x + 17,
                 p.y + 8,
@@ -1717,77 +1198,8 @@ function dibujarPlantas() {
 }
 
 // -----------------------------
-// DIBUJAR CONO, BALDE Y ZOMBIS
+// DIBUJAR ZOMBIS
 // -----------------------------
-
-function dibujarAccesorioCabeza(type, x, y, rot = 0, alpha = 1) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(rot);
-    ctx.globalAlpha = Math.max(0, alpha);
-
-    if (type === "cone") {
-        ctx.beginPath();
-        ctx.moveTo(-13, 4);
-        ctx.lineTo(0, -24);
-        ctx.lineTo(13, 4);
-        ctx.closePath();
-        ctx.fillStyle = "#ff7300";
-        ctx.fill();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#9e3f00";
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(-8, -7);
-        ctx.lineTo(8, -7);
-        ctx.lineTo(10, -2);
-        ctx.lineTo(-10, -2);
-        ctx.closePath();
-        ctx.fillStyle = "#fff4dc";
-        ctx.fill();
-
-        ctx.fillStyle = "#d95b00";
-        ctx.fillRect(-15, 2, 30, 4);
-    } else if (type === "bucket") {
-        const grad = ctx.createLinearGradient(-14, 0, 14, 0);
-        grad.addColorStop(0, "#7c878e");
-        grad.addColorStop(0.5, "#ced6db");
-        grad.addColorStop(1, "#69737a");
-
-        ctx.beginPath();
-        ctx.moveTo(-14, -18);
-        ctx.lineTo(14, -18);
-        ctx.lineTo(11, 3);
-        ctx.lineTo(-11, 3);
-        ctx.closePath();
-        ctx.fillStyle = grad;
-        ctx.fill();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#3f464b";
-        ctx.stroke();
-
-        ctx.fillStyle = "#9aa4ab";
-        ctx.fillRect(-15, -20, 30, 4);
-
-        ctx.beginPath();
-        ctx.arc(0, -8, 13, Math.PI * 0.15, Math.PI * 0.85, false);
-        ctx.strokeStyle = "#555f66";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    } else if (type === "visor") {
-        ctx.fillStyle = "#37474f";
-        ctx.fillRect(-16, -15, 32, 11);
-        ctx.strokeStyle = "#cfd8dc";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(-16, -15, 32, 11);
-
-        ctx.fillStyle = "#ff3d00";
-        ctx.fillRect(-10, -11, 20, 4);
-    }
-
-    ctx.restore();
-}
 
 function dibujarZombies() {
     for (const z of zombies) {
@@ -1800,30 +1212,14 @@ function dibujarZombies() {
             z.y + 15
         );
 
-        if (z.armorHp > 0 && z.hatType) {
-            dibujarAccesorioCabeza(z.hatType, z.x + 1, z.y - 20, 0, 1);
-        }
-
-        if (z.fallingHat) {
-            dibujarAccesorioCabeza(
-                z.fallingHat.type,
-                z.fallingHat.x,
-                z.fallingHat.y,
-                z.fallingHat.rot,
-                z.fallingHat.alpha
-            );
-        }
-
-        const width = z.type === "boss" ? 58 : 42;
-        const hpPercent = Math.max(0, z.hp / z.maxHp);
-        const armorPercent = z.maxArmorHp > 0
-            ? Math.max(0, z.armorHp / z.maxArmorHp)
-            : 0;
+        // Barra de vida.
+        const width = z.type === "boss" ? 55 : 40;
+        const percent = Math.max(0, z.hp / z.maxHp);
 
         ctx.fillStyle = "#4d2020";
         ctx.fillRect(
             z.x - width / 2,
-            z.y - 46,
+            z.y - 35,
             width,
             6
         );
@@ -1831,33 +1227,15 @@ function dibujarZombies() {
         ctx.fillStyle = "#d94c3b";
         ctx.fillRect(
             z.x - width / 2,
-            z.y - 46,
-            width * hpPercent,
+            z.y - 35,
+            width * percent,
             6
         );
-
-        if (z.maxArmorHp > 0 && z.armorHp > 0) {
-            ctx.fillStyle = "#3c2918";
-            ctx.fillRect(
-                z.x - width / 2,
-                z.y - 53,
-                width,
-                5
-            );
-
-            ctx.fillStyle = z.hatType === "cone" ? "#ff8800" : "#b0bec5";
-            ctx.fillRect(
-                z.x - width / 2,
-                z.y - 53,
-                width * armorPercent,
-                5
-            );
-        }
 
         if (z.slow > 0) {
             ctx.fillStyle = "#9ce8ff";
             ctx.beginPath();
-            ctx.arc(z.x, z.y - 60, 5, 0, Math.PI * 2);
+            ctx.arc(z.x, z.y - 45, 5, 0, Math.PI * 2);
             ctx.fill();
         }
     }
@@ -1869,28 +1247,6 @@ function dibujarZombies() {
 
 function dibujarProyectiles() {
     for (const b of bullets) {
-        if (b.spore) {
-            ctx.beginPath();
-            ctx.arc(b.x, b.y, 7, 0, Math.PI * 2);
-            ctx.fillStyle = "#b55cff";
-            ctx.fill();
-            ctx.strokeStyle = "#5e1c9c";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            continue;
-        }
-
-        if (b.shadow) {
-            ctx.beginPath();
-            ctx.arc(b.x, b.y, 11, 0, Math.PI * 2);
-            ctx.fillStyle = "#3b1354";
-            ctx.fill();
-            ctx.strokeStyle = "#b366ff";
-            ctx.lineWidth = 2.5;
-            ctx.stroke();
-            continue;
-        }
-
         ctx.font = "22px Arial";
         ctx.fillText(
             b.ice ? "❄️" : "🟢",
