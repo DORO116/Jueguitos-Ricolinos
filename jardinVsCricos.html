@@ -304,7 +304,7 @@ const PLANTS = {
         name: "Patatapum",
         cost: 25,
         hp: 100,
-        emoji: "🥔",
+        emoji: "🟤",
         cd: 600
     }
 };
@@ -342,7 +342,7 @@ const ZOMBIES = {
         hp: 1200,
         speed: 0.3,
         damage: 1.5,
-        emoji: "🤖"
+        emoji: "🧟"
     }
 };
 
@@ -454,7 +454,7 @@ document.getElementById("progressFill").style.width = progress + "%";
         card.classList.toggle("disabled", sun < plant.cost || remaining > 0);
 
         cooldown.style.transform =
-            scaleY(${remaining / plant.cd});
+            `scaleY(${remaining / plant.cd})`;
     }
 
     document.getElementById("shovel").classList.toggle(
@@ -592,7 +592,7 @@ function pantallaInicio() {
     mostrarOverlay(
         "🌻 Jardín vs. Cricos",
         "¡Defiende tu jardín de los cricos!<br>Coloca plantas, recoge soles y evita que lleguen a tu casa.",
-        <button onclick="iniciarJuego()">Comenzar campaña</button>
+        `<button onclick="iniciarJuego()">Comenzar campaña</button>`
     );
 }
 
@@ -600,13 +600,13 @@ function pantallaGameOver() {
     state = "GAMEOVER";
 
     const extra = infiniteMode
-        ? <p>Oleadas superadas: ${infiniteWave - 1}</p>
-        : <p>Llegaste al nivel ${level}.</p>;
+        ? `<p>Oleadas superadas: ${infiniteWave - 1}</p>`
+        : `<p>Llegaste al nivel ${level}.</p>`;
 
     mostrarOverlay(
         "🧟 ¡Los cricos ganaron!",
         extra + " Tu jardín ha sido invadido.",
-        <button onclick="reiniciarJuego()">Volver a empezar</button>
+        `<button onclick="reiniciarJuego()">Volver a empezar</button>`
     );
 }
 
@@ -616,7 +616,7 @@ function pantallaNivelCompletado() {
     mostrarOverlay(
         "¡Nivel completado! 🌻",
         "Has eliminado a todos los cricos de este nivel.",
-        <button onclick="siguienteNivel()">Siguiente nivel</button>
+        `<button onclick="siguienteNivel()">Siguiente nivel</button>`
     );
 }
 
@@ -638,8 +638,8 @@ function pantallaSiguienteOleada() {
 
     mostrarOverlay(
         "¡Oleada superada! 🌻",
-        Has sobrevivido a la oleada ${infiniteWave}.<br>La siguiente será más difícil.,
-        <button onclick="continuarInfinito()">Siguiente oleada</button>
+        `Has sobrevivido a la oleada ${infiniteWave}.<br>La siguiente será más difícil.`,
+        `<button onclick="continuarInfinito()">Siguiente oleada</button>`
     );
 }
 
@@ -1281,10 +1281,10 @@ function dibujarEfectos() {
             Math.PI * 2
         );
 
-        ctx.fillStyle = rgba(255,120,20,${progress * 0.5});
+        ctx.fillStyle = `rgba(255,120,20,${progress * 0.5})`;
         ctx.fill();
 
-        ctx.strokeStyle = rgba(255,220,80,${progress});
+        ctx.strokeStyle = `rgba(255,220,80,${progress})`;
         ctx.lineWidth = 5;
         ctx.stroke();
     }
