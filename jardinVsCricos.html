@@ -164,6 +164,10 @@ h1 {
     background: #f6e8b5;
 }
 
+#boardWrapper {
+    position: relative;
+}
+
 canvas {
     display: block;
     width: 100%;
@@ -176,16 +180,17 @@ canvas {
 #overlay, #almanacModal {
     position: absolute;
     inset: 0;
-    top: 100px;
     display: none;
     align-items: center;
     justify-content: center;
     background: rgba(0,0,0,.72);
+    pointer-events: none;
     z-index: 10;
 }
 
 #overlay.show, #almanacModal.show {
     display: flex;
+    pointer-events: auto;
 }
 
 #almanacModal {
@@ -237,7 +242,7 @@ canvas {
     padding: 18px;
     width: 92%;
     max-width: 760px;
-    max-height: 82vh;
+    max-height: 85%;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -248,6 +253,8 @@ canvas {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
     border-bottom: 2px solid #b59e63;
     padding-bottom: 8px;
 }
@@ -317,7 +324,7 @@ canvas {
 
 .almanac-item.locked {
     background: #9c9278;
-    opacity: 0.8;
+    opacity: 0.85;
 }
 
 .almanac-item .icon {
@@ -391,25 +398,27 @@ canvas {
         </div>
     </div>
 
-    <canvas id="canvas" width="900" height="500"></canvas>
+    <div id="boardWrapper">
+        <canvas id="canvas" width="900" height="500"></canvas>
 
-    <div id="overlay">
-        <div id="overlayBox"></div>
-    </div>
+        <div id="overlay">
+            <div id="overlayBox"></div>
+        </div>
 
-    <div id="almanacModal">
-        <div id="almanacBox">
-            <div class="almanac-header">
-                <h2>📖 Almanaque Suburbano</h2>
-                <div class="almanac-tabs">
-                    <button class="tab-btn active" id="tabPlants" onclick="cambiarTabAlmanaque('plants')">🌱 Plantas</button>
-                    <button class="tab-btn" id="tabZombies" onclick="cambiarTabAlmanaque('zombies')">🧟 Cricos</button>
-                    <button class="close-btn" onclick="cerrarAlmanaque()">✕</button>
+        <div id="almanacModal">
+            <div id="almanacBox">
+                <div class="almanac-header">
+                    <h2>📖 Almanaque Suburbano</h2>
+                    <div class="almanac-tabs">
+                        <button class="tab-btn active" id="tabPlants" onclick="cambiarTabAlmanaque('plants')">🌱 Plantas</button>
+                        <button class="tab-btn" id="tabZombies" onclick="cambiarTabAlmanaque('zombies')">🧟 Cricos</button>
+                        <button class="close-btn" onclick="cerrarAlmanaque()">✕</button>
+                    </div>
                 </div>
-            </div>
-            <div class="almanac-body">
-                <div class="almanac-grid" id="almanacList"></div>
-                <div class="almanac-detail" id="almanacDetail"></div>
+                <div class="almanac-body">
+                    <div class="almanac-grid" id="almanacList"></div>
+                    <div class="almanac-detail" id="almanacDetail"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -435,6 +444,7 @@ let sun = 150;
 let level = 1;
 let frame = 0;
 let tool = null;
+let nextZombieId = 1;
 
 let plants = [];
 let zombies = [];
@@ -456,6 +466,7 @@ const PLANTS = {
         hp: 100,
         emoji: "🌻",
         cd: 300,
+        last: -1000,
         unlocked: true,
         role: "Producción solar",
         desc: "Genera soles extra cada cierto tiempo para desplegar más defensas.",
@@ -468,6 +479,7 @@ const PLANTS = {
         hp: 120,
         emoji: "🌱",
         cd: 300,
+        last: -1000,
         unlocked: true,
         role: "Ataque básico",
         desc: "Dispara guisantes a los cricos que avanzan por su misma fila.",
@@ -480,6 +492,7 @@ const PLANTS = {
         hp: 80,
         emoji: "🍄",
         cd: 220,
+        last: -1000,
         unlocked: true,
         role: "Defensa gratuita (3 casillas)",
         desc: "No cuesta soles, pero solo alcanza a los cricos a menos de 3 casillas.",
@@ -492,6 +505,7 @@ const PLANTS = {
         hp: 600,
         emoji: "🥜",
         cd: 600,
+        last: -1000,
         unlocked: true,
         role: "Bloqueo resistente",
         desc: "Soporta muchos mordiscos para frenar el avance enemigo.",
@@ -504,6 +518,7 @@ const PLANTS = {
         hp: 120,
         emoji: "❄️",
         cd: 400,
+        last: -1000,
         unlocked: true,
         role: "Ataque + Ralentización",
         desc: "Lanza guisantes helados que hacen daño y reducen a la mitad la velocidad.",
@@ -516,6 +531,7 @@ const PLANTS = {
         hp: 50,
         emoji: "🍒",
         cd: 900,
+        last: -1000,
         unlocked: true,
         role: "Explosión en área",
         desc: "Detona tras un breve instante causando gran daño en un radio amplio.",
@@ -528,6 +544,7 @@ const PLANTS = {
         hp: 100,
         emoji: "🥔",
         cd: 600,
+        last: -1000,
         unlocked: true,
         role: "Mina terrestre",
         desc: "Tarda unos segundos en armarse bajo tierra y explota al contacto.",
@@ -540,9 +557,8 @@ const PLANTS = {
         hp: 140,
         emoji: "🌑",
         cd: 420,
-        get unlocked() {
-            return shadowPeaUnlocked;
-        },
+        last: -1000,
+        unlocked: shadowPeaUnlocked,
         role: "Especial perforante y gélido",
         desc: "Dispara orbes sombríos que atraviesan a todos los cricos de la fila y los ralentizan.",
         lore: "Despertó tras salvar los 5 niveles; su sombra no perdona a ninguna fila."
@@ -551,7 +567,7 @@ const PLANTS = {
 
 const ZOMBIES = {
     normal: {
-        name: "Crico",
+        name: "Crico Normal",
         hp: 120,
         armorHp: 0,
         speed: 0.45,
@@ -663,8 +679,8 @@ function initUI() {
         card.id = "card-" + key;
 
         card.innerHTML = `
-            <span class="emoji">${plant.unlocked ? plant.emoji : "🔒"}</span>
-            <span class="cost">${plant.unlocked ? ☀️ ${plant.cost} : "Nivel 5"}</span>
+            <span class="emoji" id="emoji-${key}">${plant.unlocked ? plant.emoji : "🔒"}</span>
+            <span class="cost" id="cost-${key}">${plant.unlocked ? ☀️ ${plant.cost} : "Nivel 5"}</span>
             <div class="cooldown" id="cooldown-${key}"></div>
         `;
 
@@ -683,6 +699,21 @@ function initUI() {
         tool = tool === "shovel" ? null : "shovel";
         actualizarUI();
     };
+}
+
+function sincronizarDesbloqueoSombrio() {
+    PLANTS.shadowpea.unlocked = shadowPeaUnlocked;
+    const emojiEl = document.getElementById("emoji-shadowpea");
+    const costEl = document.getElementById("cost-shadowpea");
+    const cardEl = document.getElementById("card-shadowpea");
+
+    if (emojiEl && costEl && cardEl) {
+        emojiEl.textContent = shadowPeaUnlocked ? PLANTS.shadowpea.emoji : "🔒";
+        costEl.textContent = shadowPeaUnlocked ? ☀️ ${PLANTS.shadowpea.cost} : "Nivel 5";
+        cardEl.title = shadowPeaUnlocked
+            ? ${PLANTS.shadowpea.name} (${PLANTS.shadowpea.cost})
+            : ${PLANTS.shadowpea.name} — Completa el Nivel 5 para desbloquear;
+    }
 }
 
 function elegirHerramienta(type) {
@@ -714,6 +745,7 @@ function actualizarUI() {
     for (const [key, plant] of Object.entries(PLANTS)) {
         const card = document.getElementById("card-" + key);
         const cooldown = document.getElementById("cooldown-" + key);
+        if (!card || !cooldown) continue;
 
         if (!plant.unlocked) {
             card.classList.add("locked");
@@ -724,7 +756,8 @@ function actualizarUI() {
 
         card.classList.remove("locked");
 
-        const remaining = Math.max(0, plant.cd - (frame - plant.last));
+        const elapsed = Math.max(0, frame - (plant.last ?? -1000));
+        const remaining = Math.max(0, plant.cd - elapsed);
 
         card.classList.toggle("selected", tool === key);
         card.classList.toggle("disabled", sun < plant.cost || remaining > 0);
@@ -895,6 +928,11 @@ function configurarOleadaInfinita() {
     frame = 0;
     spawned = 0;
     killed = 0;
+    tool = null;
+
+    for (const p of Object.values(PLANTS)) {
+        p.last = -1000;
+    }
 
     zombies = [];
     bullets = [];
@@ -1000,7 +1038,8 @@ function pantallaVictoria() {
     const wasAlreadyUnlocked = shadowPeaUnlocked;
     shadowPeaUnlocked = true;
     localStorage.setItem(STORAGE_KEY, "true");
-    initUI();
+    sincronizarDesbloqueoSombrio();
+    actualizarUI();
 
     const rewardMsg = wasAlreadyUnlocked
         ? "El <strong>Lanzaguisantes Sombrío</strong> sigue listo para arrasar en el modo infinito."
@@ -1163,6 +1202,7 @@ function crearZombie() {
     const armorHp = (data.armorHp || 0) * hpMultiplier;
 
     zombies.push({
+        id: nextZombieId++,
         x: 920,
         y: row * CELL_H + 50,
         row,
@@ -1422,10 +1462,10 @@ function actualizar() {
             if (
                 z.row === b.row &&
                 Math.abs(z.x - b.x) < 28 &&
-                !b.hitIds.includes(zIdx)
+                !b.hitIds.includes(z.id)
             ) {
                 aplicarDanioZombie(z, b.damage);
-                b.hitIds.push(zIdx);
+                b.hitIds.push(z.id);
 
                 if (b.ice) {
                     z.slow = 180;
@@ -1687,7 +1727,6 @@ function dibujarAccesorioCabeza(type, x, y, rot = 0, alpha = 1) {
     ctx.globalAlpha = Math.max(0, alpha);
 
     if (type === "cone") {
-        // Cono vial naranja con franja reflectante
         ctx.beginPath();
         ctx.moveTo(-13, 4);
         ctx.lineTo(0, -24);
@@ -1699,7 +1738,6 @@ function dibujarAccesorioCabeza(type, x, y, rot = 0, alpha = 1) {
         ctx.strokeStyle = "#9e3f00";
         ctx.stroke();
 
-        // Franja blanca
         ctx.beginPath();
         ctx.moveTo(-8, -7);
         ctx.lineTo(8, -7);
@@ -1709,11 +1747,9 @@ function dibujarAccesorioCabeza(type, x, y, rot = 0, alpha = 1) {
         ctx.fillStyle = "#fff4dc";
         ctx.fill();
 
-        // Base del cono
         ctx.fillStyle = "#d95b00";
         ctx.fillRect(-15, 2, 30, 4);
     } else if (type === "bucket") {
-        // Balde metálico gris
         const grad = ctx.createLinearGradient(-14, 0, 14, 0);
         grad.addColorStop(0, "#7c878e");
         grad.addColorStop(0.5, "#ced6db");
@@ -1731,18 +1767,15 @@ function dibujarAccesorioCabeza(type, x, y, rot = 0, alpha = 1) {
         ctx.strokeStyle = "#3f464b";
         ctx.stroke();
 
-        // Borde superior
         ctx.fillStyle = "#9aa4ab";
         ctx.fillRect(-15, -20, 30, 4);
 
-        // Asa lateral
         ctx.beginPath();
         ctx.arc(0, -8, 13, Math.PI * 0.15, Math.PI * 0.85, false);
         ctx.strokeStyle = "#555f66";
         ctx.lineWidth = 2;
         ctx.stroke();
     } else if (type === "visor") {
-        // Visor blindado del robot
         ctx.fillStyle = "#37474f";
         ctx.fillRect(-16, -15, 32, 11);
         ctx.strokeStyle = "#cfd8dc";
@@ -1767,12 +1800,10 @@ function dibujarZombies() {
             z.y + 15
         );
 
-        // Cono o balde en la cabeza mientras tenga armadura
         if (z.armorHp > 0 && z.hatType) {
             dibujarAccesorioCabeza(z.hatType, z.x + 1, z.y - 20, 0, 1);
         }
 
-        // Accesorio cayendo al romperse
         if (z.fallingHat) {
             dibujarAccesorioCabeza(
                 z.fallingHat.type,
@@ -1783,7 +1814,6 @@ function dibujarZombies() {
             );
         }
 
-        // Barra de vida (cuerpo + armadura si aplica)
         const width = z.type === "boss" ? 58 : 42;
         const hpPercent = Math.max(0, z.hp / z.maxHp);
         const armorPercent = z.maxArmorHp > 0
