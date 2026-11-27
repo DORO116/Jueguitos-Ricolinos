@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -47,7 +48,7 @@ h1 {
     font-weight: bold;
     font-size: 17px;
 }
-    
+
 #levelPanel {
     display: flex;
     flex-direction: column;
@@ -72,7 +73,7 @@ h1 {
     border-radius: 10px;
     transition: width 0.2s ease;
 }
-    
+
 #plantCards {
     display: flex;
     gap: 5px;
@@ -133,6 +134,50 @@ h1 {
 #shovel.selected {
     border-color: white;
     background: #a9e78c;
+}
+
+#almanacButton {
+    min-height: 76px;
+    padding: 6px 10px;
+    border: 3px solid #79683c;
+    border-radius: 7px;
+    background: #d9c88c;
+    color: #222;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.almanac-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+    gap: 9px;
+    max-height: 55vh;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.almanac-entry {
+    background: #f5e9bd;
+    border: 2px solid #a28b50;
+    border-radius: 8px;
+    padding: 9px;
+    font-size: 13px;
+}
+
+.almanac-entry .plant-emoji {
+    font-size: 27px;
+    display: block;
+    text-align: center;
+}
+
+.almanac-entry strong {
+    display: block;
+    text-align: center;
+    margin: 3px 0 5px;
+}
+
+.almanac-entry.locked {
+    opacity: .65;
 }
 
 canvas {
@@ -214,12 +259,13 @@ canvas {
         <div id="sunCounter">☀️ 150</div>
         <div id="plantCards"></div>
         <button id="shovel" title="Pala">🪓</button>
+        <button id="almanacButton" title="Consultar el almanaque">📖<br>Almanaque</button>
         <div id="levelPanel">
-        <div id="levelInfo">Nivel 1</div>
-        <div id="progressTrack">
-        <div id="progressFill"></div>
-    </div>
-</div>
+            <div id="levelInfo">Nivel 1</div>
+            <div id="progressTrack">
+                <div id="progressFill"></div>
+            </div>
+        </div>
     </div>
 
     <canvas id="canvas" width="900" height="500"></canvas>
@@ -258,6 +304,7 @@ let killed = 0;
 
 let infiniteMode = false;
 let infiniteWave = 1;
+let campaignCompleted = false;
 
 const PLANTS = {
     sunflower: {
@@ -304,8 +351,28 @@ const PLANTS = {
         name: "Patatapum",
         cost: 25,
         hp: 100,
-        emoji: "🟤",
-        cd: 600
+        emoji: "🥔",
+        cd: 600,
+        description: "Se prepara bajo tierra y explota cuando un crico se acerca."
+    },
+
+    puffshroom: {
+        name: "Seta desesporada",
+        cost: 0,
+        hp: 90,
+        emoji: "🍄",
+        cd: 150,
+        description: "Planta gratuita. Lanza esporas a corta distancia para defender su fila."
+    },
+
+    shadowPeashooter: {
+        name: "Lanzaguisantes sombrío",
+        cost: 150,
+        hp: 130,
+        emoji: "🌑",
+        cd: 450,
+        locked: true,
+        description: "Se desbloquea al completar los cinco niveles principales. Sus disparos atraviesan a todos los cricos de su fila."
     }
 };
 
@@ -342,7 +409,7 @@ const ZOMBIES = {
         hp: 1200,
         speed: 0.3,
         damage: 1.5,
-        emoji: "🧟"
+        emoji: "🤖"
     }
 };
 
@@ -394,6 +461,8 @@ function initUI() {
     container.innerHTML = "";
 
     for (const [key, plant] of Object.entries(PLANTS)) {
+        if (plant.locked && !campaignCompleted) continue;
+
         const card = document.createElement("button");
 
         card.className = "plant-card";
@@ -412,6 +481,8 @@ function initUI() {
         container.appendChild(card);
     }
 
+    document.getElementById("almanacButton").onclick = mostrarAlmanaque;
+
     document.getElementById("shovel").onclick = () => {
         if (state !== "PLAYING") return;
 
@@ -425,6 +496,7 @@ function elegirHerramienta(type) {
 
     const p = PLANTS[type];
 
+    if (p.locked && !campaignCompleted) return;
     if (sun < p.cost) return;
 
     tool = tool === type ? null : type;
@@ -438,15 +510,18 @@ function actualizarUI() {
         infiniteMode
             ? "Infinito - Oleada " + infiniteWave
             : "Nivel " + level;
-    const progress = currentConfig.total > 0
-    ? Math.min(100, (killed / currentConfig.total) * 100)
-    : 0;
 
-document.getElementById("progressFill").style.width = progress + "%";
+    const progress = currentConfig.total > 0
+        ? Math.min(100, (killed / currentConfig.total) * 100)
+        : 0;
+
+    document.getElementById("progressFill").style.width = progress + "%";
 
     for (const [key, plant] of Object.entries(PLANTS)) {
         const card = document.getElementById("card-" + key);
         const cooldown = document.getElementById("cooldown-" + key);
+
+        if (!card || !cooldown) continue;
 
         const remaining = Math.max(0, plant.cd - (frame - plant.last));
 
@@ -566,6 +641,39 @@ function reiniciarJuego() {
 }
 
 // -----------------------------
+// ALMANAQUE
+// -----------------------------
+
+function mostrarAlmanaque() {
+    if (state === "MENU" || state === "GAMEOVER" || state === "LEVEL" ||
+        state === "WON" || state === "WAVE") return;
+
+    const entries = Object.entries(PLANTS).map(([key, plant]) => {
+        const locked = plant.locked && !campaignCompleted;
+        const status = locked ? "🔒 Bloqueada" : `☀️ ${plant.cost} soles`;
+
+        return `
+            <div class="almanac-entry ${locked ? "locked" : ""}">
+                <span class="plant-emoji">${locked ? "❔" : plant.emoji}</span>
+                <strong>${locked ? "Planta desconocida" : plant.name}</strong>
+                <div>${status}</div>
+                <p>${locked ? "Completa los cinco niveles principales para descubrirla." : (plant.description || "Planta defensiva del jardín.")}</p>
+            </div>
+        `;
+    }).join("");
+
+    mostrarOverlay(
+        "📖 Almanaque del jardín",
+        `<div class="almanac-grid">${entries}</div>`,
+        `<button onclick="cerrarAlmanaque()">Volver al juego</button>`
+    );
+}
+
+function cerrarAlmanaque() {
+    ocultarOverlay();
+}
+
+// -----------------------------
 // OVERLAYS
 // -----------------------------
 
@@ -622,6 +730,9 @@ function pantallaNivelCompletado() {
 
 function pantallaVictoria() {
     state = "WON";
+    campaignCompleted = true;
+    initUI();
+    actualizarUI();
 
     mostrarOverlay(
         "🏆 ¡Jardín salvado!",
@@ -665,6 +776,7 @@ function obtenerPlanta(col, row) {
 function colocarPlanta(col, row, type) {
     const data = PLANTS[type];
 
+    if (!data || (data.locked && !campaignCompleted)) return;
     if (obtenerPlanta(col, row)) return;
 
     if (sun < data.cost) return;
@@ -876,22 +988,33 @@ function actualizar() {
             }
         }
 
-        // Lanzaguisantes y hielaguisantes.
+        // Lanzaguisantes, hielaguisantes, seta y sombrío.
         if (
             p.type === "peashooter" ||
-            p.type === "snowpea"
+            p.type === "snowpea" ||
+            p.type === "puffshroom" ||
+            p.type === "shadowPeashooter"
         ) {
+            const range = p.type === "puffshroom" ? 270 : 900;
+
             const enemyInRow = zombies.some(
-                z => z.row === p.row && z.x > p.x
+                z => z.row === p.row && z.x > p.x && z.x <= p.x + range
             );
 
-            if (enemyInRow && p.timer % 125 === 0) {
+            const fireRate = p.type === "puffshroom" ? 105 :
+                p.type === "shadowPeashooter" ? 145 : 125;
+
+            if (enemyInRow && p.timer % fireRate === 0) {
                 bullets.push({
                     x: p.x + 65,
                     y: p.y + 50,
                     row: p.row,
-                    damage: 25,
-                    ice: p.type === "snowpea"
+                    damage: p.type === "shadowPeashooter" ? 35 : 25,
+                    ice: p.type === "snowpea",
+                    pierce: p.type === "shadowPeashooter",
+                    hitZombies: [],
+                    spore: p.type === "puffshroom",
+                    maxX: p.x + range
                 });
             }
         }
@@ -944,7 +1067,10 @@ function actualizar() {
         }
     }
 
-    // Actualizar proyectiles.
+    // -----------------------------
+    // ACTUALIZAR PROYECTILES
+    // -----------------------------
+
     for (let i = bullets.length - 1; i >= 0; i--) {
         const b = bullets[i];
 
@@ -955,20 +1081,31 @@ function actualizar() {
         for (const z of zombies) {
             if (
                 z.row === b.row &&
-                Math.abs(z.x - b.x) < 28
+                Math.abs(z.x - b.x) < 28 &&
+                (!b.hitZombies || !b.hitZombies.includes(z))
             ) {
+                // El proyectil daña al zombi.
                 z.hp -= b.damage;
 
                 if (b.ice) {
                     z.slow = 180;
                 }
 
-                hit = true;
-                break;
+                if (b.pierce) {
+                    // Guardamos el zombi para que este proyectil
+                    // no vuelva a dañarlo mientras lo atraviesa.
+                    b.hitZombies.push(z);
+                } else {
+                    // Los proyectiles normales desaparecen al impactar.
+                    hit = true;
+                    break;
+                }
             }
         }
 
-        if (hit || b.x > 920) {
+        // Los proyectiles sombríos siguen avanzando después de impactar.
+        // Los demás desaparecen al golpear a un zombi.
+        if ((!b.pierce && hit) || b.x > (b.maxX || 920)) {
             bullets.splice(i, 1);
         }
     }
@@ -1248,8 +1385,9 @@ function dibujarZombies() {
 function dibujarProyectiles() {
     for (const b of bullets) {
         ctx.font = "22px Arial";
+
         ctx.fillText(
-            b.ice ? "❄️" : "🟢",
+            b.ice ? "❄️" : b.pierce ? "🟣" : b.spore ? "🟡" : "🟢",
             b.x,
             b.y
         );
